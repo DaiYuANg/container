@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  redis-master:
+    image: daiyuang/redis:8-alpine
+    environment:
+      - REDIS_REPLICATION_MODE=standalone
+      - REDIS_PASSWORD=strongpass
+    volumes:
+      - redis_master_data:/data
+
+  redis-replica:
+    image: daiyuang/redis:8-alpine
+    environment:
+      - REDIS_REPLICATION_MODE=replica
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_PASSWORD=strongpass
+    volumes:
+      - redis_replica_data:/data
+    deploy:
+      replicas: 2
+
+  redis-sentinel:
+    image: daiyuang/redis:8-alpine
+    environment:
+      - REDIS_REPLICATION_MODE=sentinel
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_PASSWORD=strongpass
+      - REDIS_SENTINEL_QUORUM=2
+    deploy:
+      replicas: 3
+
+volumes:
+  redis_master_data:
+  redis_replica_data:

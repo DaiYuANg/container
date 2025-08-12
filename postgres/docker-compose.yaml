@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  pg-monitor:
+    image: daiyuang/postgres-auto-failover:17-bookworm
+    environment:
+      - AUTO_FAILOVER_ROLE=monitor
+      - POSTGRES_PASSWORD=strongpassword
+      - POSTGRES_MAX_CONNECTIONS=200
+      - POSTGRES_LOG_LEVEL=warning
+      - POSTGRES_SHARED_BUFFERS=256MB
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_monitor_data:/var/lib/postgresql/data
+
+  pg-primary:
+    image: daiyuang/postgres-auto-failover:17-bookworm
+    environment:
+      - AUTO_FAILOVER_ROLE=primary
+      - AUTO_FAILOVER_MONITOR_NODE=postgres://postgres:strongpassword@pg-monitor:5432/pg_auto_failover?sslmode=disable
+      - AUTO_FAILOVER_NODE_NAME=pg-primary
+      - POSTGRES_PASSWORD=strongpassword
+      - POSTGRES_MAX_CONNECTIONS=200
+      - POSTGRES_LOG_LEVEL=warning
+      - POSTGRES_SHARED_BUFFERS=256MB
+    ports:
+      - "5434:5432"
+    depends_on:
+      - pg-monitor
+    volumes:
+      - pg_primary_data:/var/lib/postgresql/data
+
+  pg-secondary:
+    image: daiyuang/postgres-auto-failover:17-bookworm
+    environment:
+      - AUTO_FAILOVER_ROLE=secondary
+      - AUTO_FAILOVER_MONITOR_NODE=postgres://postgres:strongpassword@pg-monitor:5432/pg_auto_failover?sslmode=disable
+      - AUTO_FAILOVER_NODE_NAME=pg-secondary
+      - POSTGRES_PASSWORD=strongpassword
+      - POSTGRES_MAX_CONNECTIONS=200
+      - POSTGRES_LOG_LEVEL=warning
+      - POSTGRES_SHARED_BUFFERS=256MB
+    ports:
+      - "5436:5432"
+    depends_on:
+      - pg-monitor
+    volumes:
+      - pg_secondary_data:/var/lib/postgresql/data
+
+volumes:
+  pg_monitor_data:
+  pg_primary_data:
+  pg_secondary_data:

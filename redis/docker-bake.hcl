@@ -1,52 +1,99 @@
 group "default" {
   targets = [
-    "redis-7-alpine",
-    "redis-7-bookworm",
-    "redis-8-alpine",
-    "redis-8-bookworm",
-    "redis-6-alpine",
-    "redis-6-bookworm"
+    "builder",
+    "redis-standalone",
+    "redis-replica",
+    "redis-sentinel",
+    "redis-cluster"
   ]
 }
 
-target "redis-7-alpine" {
+target "builder" {
   context = "."
-  dockerfile = "Dockerfile"
-  args = { REDIS_VERSION = "7-alpine" }
-  tags = ["daiyuang/redis:7-alpine"]
+  dockerfile = "dockerfile/Dockerfile.builder"
+  tags = ["redis-builder:latest"]
 }
 
-target "redis-7-bookworm" {
+target "redis-standalone" {
+  name = "redis-${variant}-${replace(version, ".", "-")}"
   context = "."
-  dockerfile = "Dockerfile"
-  args = { REDIS_VERSION = "7-bookworm" }
-  tags = ["daiyuang/redis:7-bookworm"]
+  contexts = {
+    builder = "target:builder"
+  }
+  matrix = {
+    variant = ["alpine", "debian"]
+    version = ["7", "8"]
+  }
+  target = variant
+  args = {
+    VERSION = version
+  }
+  dockerfile = "dockerfile/Dockerfile.standalone"
+  tags = [
+    "daiyuang/redis-standalone:${variant}-${version}"
+  ]
+  depends_on = ["builder"]
 }
 
-target "redis-8-alpine" {
+target "redis-replica" {
+  name = "redis-${variant}-${replace(version, ".", "-")}"
   context = "."
-  dockerfile = "Dockerfile"
-  args = { REDIS_VERSION = "8-alpine" }
-  tags = ["daiyuang/redis:8-alpine"]
+  contexts = {
+    builder = "target:builder"
+  }
+  matrix = {
+    variant = ["alpine", "debian"]
+    version = ["7", "8"]
+  }
+  target = variant
+  args = {
+    VERSION = version
+  }
+  dockerfile = "dockerfile/Dockerfile.replica"
+  tags = [
+    "daiyuang/redis-replica:${variant}-${version}"
+  ]
+  depends_on = ["builder"]
 }
 
-target "redis-8-bookworm" {
+target "redis-sentinel" {
+  name = "redis-${variant}-${replace(version, ".", "-")}"
   context = "."
-  dockerfile = "Dockerfile"
-  args = { REDIS_VERSION = "8-bookworm" }
-  tags = ["daiyuang/redis:8-bookworm"]
+  contexts = {
+    builder = "target:builder"
+  }
+  matrix = {
+    variant = ["alpine", "debian"]
+    version = ["7", "8"]
+  }
+  target = variant
+  args = {
+    VERSION = version
+  }
+  dockerfile = "dockerfile/Dockerfile.sentinel"
+  tags = [
+    "daiyuang/redis-sentinel:${variant}-${version}"
+  ]
+  depends_on = ["builder"]
 }
 
-target "redis-6-alpine" {
+target "redis-cluster" {
+  name = "redis-${variant}-${replace(version, ".", "-")}"
   context = "."
-  dockerfile = "Dockerfile"
-  args = { REDIS_VERSION = "6-alpine" }
-  tags = ["daiyuang/redis:6-alpine"]
-}
-
-target "redis-6-bookworm" {
-  context = "."
-  dockerfile = "Dockerfile"
-  args = { REDIS_VERSION = "6-bookworm" }
-  tags = ["daiyuang/redis:6-bookworm"]
+  contexts = {
+    builder = "target:builder"
+  }
+  matrix = {
+    variant = ["alpine", "debian"]
+    version = ["7", "8"]
+  }
+  target = variant
+  args = {
+    VERSION = version
+  }
+  dockerfile = "dockerfile/Dockerfile.sentinel"
+  tags = [
+    "daiyuang/redis-cluster:${variant}-${version}"
+  ]
+  depends_on = ["builder"]
 }

@@ -1,0 +1,17 @@
+ARG VERSION=8
+FROM redis:${VERSION}-alpine AS alpine
+
+COPY --from=redis-builder:latest /script/docker-entrypoint-cluster.sh /usr/local/bin/
+COPY --from=redis-builder:latest /script/redis-setup.sh /usr/local/bin/
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint-cluster.sh"]
+CMD ["redis-server"]
+
+ARG VERSION=8
+FROM redis:${VERSION}-bookworm AS debian
+
+COPY --from=redis-builder:latest /script/docker-entrypoint-cluster.sh /usr/local/bin/
+COPY --from=redis-builder:latest /script/redis-setup.sh /usr/local/bin/
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint-cluster.sh"]
+CMD ["redis-server"]

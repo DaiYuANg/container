@@ -19,6 +19,9 @@ build-target:
 	fi
 	docker buildx bake $(target) --push
 
+start-standalone:
+	 docker compose -f .\example\docker-compose-standalone.yaml up
+
 # 清理本地所有 redis 相关镜像（不一定全，但简单示例）
 clean:
 	@docker images $(IMAGE_NAME) --format "{{.Repository}}:{{.Tag}}" | xargs -r docker rmi -f

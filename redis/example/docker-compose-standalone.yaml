@@ -1,0 +1,9 @@
+services:
+  redis-standalone:
+    image: daiyuang/redis-standalone:alpine-8
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: 12345
+      REDIS_LOG_LEVEL: debug
+      REDIS_RDB_ENABLED: yes

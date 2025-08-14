@@ -1,0 +1,133 @@
+version: "3.9"
+services:
+  redis-node1:
+    image: daiyuang/redis-cluster:alpine-8
+    container_name: redis-node1
+    environment:
+      REDIS_CLUSTER_CREATOR: "yes"
+      REDIS_CLUSTER_NODES: "127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384"
+      REDIS_CLUSTER_REPLICAS: "1"
+      REDIS_PASSWORD: "strongpass"
+      REDIS_DATA_DIR: "/data"
+      FORCE_RESET: "false"
+      REDIS_CLUSTER_ANNOUNCE_IP: "127.0.0.1"
+      REDIS_CLUSTER_ANNOUNCE_PORT: "6379"
+      REDIS_CLUSTER_ANNOUNCE_BUS_PORT: "16379"
+    ports:
+      - "6379:6379"
+      - "16379:16379"
+    volumes:
+      - redis_node1_data:/data
+    networks:
+      - redis-cluster-net
+
+  redis-node2:
+    image: daiyuang/redis-cluster:alpine-8
+    container_name: redis-node2
+    environment:
+      REDIS_CLUSTER_CREATOR: "no"
+      REDIS_CLUSTER_NODES: "127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384"
+      REDIS_CLUSTER_REPLICAS: "1"
+      REDIS_PASSWORD: "strongpass"
+      REDIS_DATA_DIR: "/data"
+      REDIS_CLUSTER_ANNOUNCE_IP: "127.0.0.1"
+      REDIS_CLUSTER_ANNOUNCE_PORT: "6380"
+      REDIS_CLUSTER_ANNOUNCE_BUS_PORT: "16380"
+    ports:
+      - "6380:6379"
+      - "16380:16379"
+    volumes:
+      - redis_node2_data:/data
+    networks:
+      - redis-cluster-net
+
+  redis-node3:
+    image: daiyuang/redis-cluster:alpine-8
+    container_name: redis-node3
+    environment:
+      REDIS_CLUSTER_CREATOR: "no"
+      REDIS_CLUSTER_NODES: "127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384"
+      REDIS_CLUSTER_REPLICAS: "1"
+      REDIS_PASSWORD: "strongpass"
+      REDIS_DATA_DIR: "/data"
+      REDIS_CLUSTER_ANNOUNCE_IP: "127.0.0.1"
+      REDIS_CLUSTER_ANNOUNCE_PORT: "6381"
+      REDIS_CLUSTER_ANNOUNCE_BUS_PORT: "16381"
+    ports:
+      - "6381:6379"
+      - "16381:16379"
+    volumes:
+      - redis_node3_data:/data
+    networks:
+      - redis-cluster-net
+
+  redis-node4:
+    image: daiyuang/redis-cluster:alpine-8
+    container_name: redis-node4
+    environment:
+      REDIS_CLUSTER_CREATOR: "no"
+      REDIS_CLUSTER_NODES: "127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384"
+      REDIS_CLUSTER_REPLICAS: "1"
+      REDIS_PASSWORD: "strongpass"
+      REDIS_DATA_DIR: "/data"
+      REDIS_CLUSTER_ANNOUNCE_IP: "127.0.0.1"
+      REDIS_CLUSTER_ANNOUNCE_PORT: "6382"
+      REDIS_CLUSTER_ANNOUNCE_BUS_PORT: "16382"
+    ports:
+      - "6382:6379"
+      - "16382:16379"
+    volumes:
+      - redis_node4_data:/data
+    networks:
+      - redis-cluster-net
+
+  redis-node5:
+    image: daiyuang/redis-cluster:alpine-8
+    container_name: redis-node5
+    environment:
+      REDIS_CLUSTER_CREATOR: "no"
+      REDIS_CLUSTER_NODES: "127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384"
+      REDIS_CLUSTER_REPLICAS: "1"
+      REDIS_PASSWORD: "strongpass"
+      REDIS_DATA_DIR: "/data"
+      REDIS_CLUSTER_ANNOUNCE_IP: "127.0.0.1"
+      REDIS_CLUSTER_ANNOUNCE_PORT: "6383"
+      REDIS_CLUSTER_ANNOUNCE_BUS_PORT: "16383"
+    ports:
+      - "6383:6379"
+      - "16383:16379"
+    volumes:
+      - redis_node5_data:/data
+    networks:
+      - redis-cluster-net
+
+  redis-node6:
+    image: daiyuang/redis-cluster:alpine-8
+    container_name: redis-node6
+    environment:
+      REDIS_CLUSTER_CREATOR: "no"
+      REDIS_CLUSTER_NODES: "127.0.0.1:6379 127.0.0.1:6380 127.0.0.1:6381 127.0.0.1:6382 127.0.0.1:6383 127.0.0.1:6384"
+      REDIS_CLUSTER_REPLICAS: "1"
+      REDIS_PASSWORD: "strongpass"
+      REDIS_DATA_DIR: "/data"
+      REDIS_CLUSTER_ANNOUNCE_IP: "127.0.0.1"
+      REDIS_CLUSTER_ANNOUNCE_PORT: "6384"
+      REDIS_CLUSTER_ANNOUNCE_BUS_PORT: "16384"
+    ports:
+      - "6384:6379"
+      - "16384:16379"
+    volumes:
+      - redis_node6_data:/data
+    networks:
+      - redis-cluster-net
+
+networks:
+  redis-cluster-net:
+
+volumes:
+  redis_node1_data:
+  redis_node2_data:
+  redis_node3_data:
+  redis_node4_data:
+  redis_node5_data:
+  redis_node6_data:

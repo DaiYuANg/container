@@ -1,32 +1,39 @@
 services:
   redis-master:
-    image: daiyuang/redis:8-alpine
+    image: daiyuang/redis-standalone:alpine-8
+    container_name: redis-master
     environment:
-      - REDIS_REPLICATION_MODE=standalone
-      - REDIS_PASSWORD=strongpass
+      REDIS_PASSWORD: strongpass
+      REDIS_ANNOUNCE_IP: 192.168.1.117    # 外部访问 Redis 用的 IP（宿主机 IP）
+      REDIS_ANNOUNCE_PORT: 6379           # 外部访问 Redis 用的端口
+    ports:
+      - "6379:6379"
     volumes:
       - redis_master_data:/data
 
   redis-replica:
-    image: daiyuang/redis:8-alpine
+    image: daiyuang/redis-replica:alpine-8
     environment:
-      - REDIS_REPLICATION_MODE=replica
-      - REDIS_MASTER_HOST=redis-master
-      - REDIS_PASSWORD=strongpass
+      REDIS_MASTER_HOST: redis-master
+      REDIS_PASSWORD: strongpass
+      REDIS_ANNOUNCE_IP: 192.168.1.117
+      REDIS_ANNOUNCE_PORT: 6380
+    ports:
+      - "6380:6379"
     volumes:
       - redis_replica_data:/data
-    deploy:
-      replicas: 2
 
   redis-sentinel:
-    image: daiyuang/redis:8-alpine
+    image: daiyuang/redis-sentinel:alpine-8
     environment:
-      - REDIS_REPLICATION_MODE=sentinel
-      - REDIS_MASTER_HOST=redis-master
-      - REDIS_PASSWORD=strongpass
-      - REDIS_SENTINEL_QUORUM=2
-    deploy:
-      replicas: 3
+      REDIS_MASTER_HOST: redis-master
+      REDIS_PASSWORD: strongpass
+      REDIS_SENTINEL_QUORUM: 2
+      REDIS_SENTINEL_NAME: mycluster
+      REDIS_SENTINEL_ANNOUNCE_IP: 192.168.1.117  # 外部访问 Sentinel 的 IP
+      REDIS_SENTINEL_ANNOUNCE_PORT: 26379        # 外部访问 Sentinel 的端口
+    ports:
+      - "26379:26379"
 
 volumes:
   redis_master_data:

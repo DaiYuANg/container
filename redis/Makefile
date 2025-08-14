@@ -4,11 +4,14 @@ IMAGE_NAME := daiyuang/redis
 .PHONY: bake bake-push clean build-target
 
 # 默认构建并推送 bake 中的 default 组
+builder:
+	docker buildx bake builder
+
 bake:
 	docker buildx bake --push
 
 # 只构建（不推送）
-bake-build:
+bake-build: builder
 	docker buildx bake
 
 # 按目标构建某个镜像，比如 make build-target target=redis-7-alpine
@@ -20,7 +23,13 @@ build-target:
 	docker buildx bake $(target) --push
 
 start-standalone:
-	 docker compose -f .\example\docker-compose-standalone.yaml up
+	 docker compose -f .\example\docker-compose-standalone.yaml up  --remove-orphans
+
+start-sentinel:
+	 docker compose -f .\example\docker-compose-sentinel.yaml up  --remove-orphans
+
+start-cluster:
+	 docker compose -f .\example\docker-compose-cluster.yaml up --remove-orphans
 
 # 清理本地所有 redis 相关镜像（不一定全，但简单示例）
 clean:

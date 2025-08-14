@@ -15,7 +15,7 @@ target "builder" {
 }
 
 target "redis-standalone" {
-  name = "redis-${variant}-${replace(version, ".", "-")}"
+  name = "redis-standalone-${variant}-${replace(version, ".", "-")}"
   context = "."
   contexts = {
     builder = "target:builder"
@@ -36,7 +36,7 @@ target "redis-standalone" {
 }
 
 target "redis-replica" {
-  name = "redis-${variant}-${replace(version, ".", "-")}"
+  name = "redis-replica-${variant}-${replace(version, ".", "-")}"
   context = "."
   contexts = {
     builder = "target:builder"
@@ -57,7 +57,7 @@ target "redis-replica" {
 }
 
 target "redis-sentinel" {
-  name = "redis-${variant}-${replace(version, ".", "-")}"
+  name = "redis-sentinel-${variant}-${replace(version, ".", "-")}"
   context = "."
   contexts = {
     builder = "target:builder"
@@ -78,7 +78,7 @@ target "redis-sentinel" {
 }
 
 target "redis-cluster" {
-  name = "redis-${variant}-${replace(version, ".", "-")}"
+  name = "redis-cluster-${variant}-${replace(version, ".", "-")}"
   context = "."
   contexts = {
     builder = "target:builder"
@@ -91,7 +91,7 @@ target "redis-cluster" {
   args = {
     VERSION = version
   }
-  dockerfile = "dockerfile/Dockerfile.sentinel"
+  dockerfile = "dockerfile/Dockerfile.cluster"
   tags = [
     "daiyuang/redis-cluster:${variant}-${version}"
   ]
